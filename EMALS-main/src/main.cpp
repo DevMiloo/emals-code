@@ -4,6 +4,7 @@ const int hallpin2 = 25;
 const int hallpin3 = 33;
 const int hallpin4 = 32;
 const int driverpin = 26;
+const int buttonpin = 14;
 
 unsigned long lastTriggerTime1 = 0;
 unsigned long lastTriggerTime2 = 0;
@@ -15,8 +16,8 @@ const float distance12 = 0.05; // Distance between hallpin1 and hallpin2 in mete
 const float distance23 = 0.02;
 const float distance34 = 0.05; // Distance between hallpin3 and hallpin4 in meters
 
-const unsigned long fireduration = 1500;  // max on-time in milliseconds
-const unsigned long fireCooldown = 5000; // Cooldown period for fire in milliseconds
+const unsigned long fireduration = 1000;  // max on-time in milliseconds
+const unsigned long fireCooldown = 10000; // Cooldown period for fire in milliseconds
 unsigned long driverpinOnTime = 0; // Store the time when driverpin was turned on
 
 void setup() {
@@ -27,37 +28,78 @@ void setup() {
   pinMode(hallpin2, INPUT);
   pinMode(hallpin3, INPUT);
   pinMode(hallpin4, INPUT);
+  pinMode(buttonpin, INPUT);
 }
 
 void fire(int sensorValue) {
   if (sensorValue == LOW) {
-    Serial.println("Fire!");
+    // Serial.println("Fire!");
     digitalWrite(driverpin, HIGH);
   } else {
-    Serial.println("No hallsignal");
+    // Serial.println("No hallsignal");
     digitalWrite(driverpin, LOW);
   }
 }
 
-void loop() { 
-  int sensorValue = digitalRead(hallpin1);
-
-  if (sensorValue == LOW) {
-    if(driverpinOnTime == 0) {
-      Serial.println('5');
-      driverpinOnTime = millis(); // Record the time when driverpin is turned on
-    }
+void speed(int microtime, int sensorValue2, int sensorValue3) {
+  if (sensorValue2 == LOW && lastTriggerTime2 == 0 && sensorValue3 == HIGH) {
+    lastTriggerTime2 = microtime;
   }
 
-  if(millis() - driverpinOnTime <= fireduration) {
-    fire(sensorValue);
-  } else if(millis() - driverpinOnTime < fireCooldown) {
+  if (sensorValue3 == LOW && lastTriggerTime2 != 0) {
+    timeDifference23 = microtime - lastTriggerTime2;
+
+    if(timeDifference23 > 1) {
+      float speed23 = (distance23 / (timeDifference23 / 1000000.00)); // Speed in meters per second
+      Serial.print("Speed between hallpin1 and hallpin2: ");
+      Serial.print(speed23);
+      Serial.println(" m/s");
+      Serial.print("Time difference (hallpin1 to hallpin2): ");
+      Serial.print(timeDifference23 / 1000.00); // Time in milliseconds
+      Serial.println(" ms");
+
+    }
+    lastTriggerTime2 = 0; // Reset the trigger time for the next cycle
+  }
+}
+
+void loop() { 
+  unsigned long millitime = millis();
+  unsigned long microtime = micros();
+
+  int sensorValue1 = digitalRead(hallpin1);
+  int sensorValue2 = digitalRead(hallpin2);
+  int sensorValue3 = digitalRead(hallpin3);  
+  int buttonValue = digitalRead(buttonpin);
+
+  if (sensorValue1 == LOW) {
+    if(driverpinOnTime == 0) {
+      driverpinOnTime = millis(); // Record the time when driverpin is turned on
+    }
+  } else {
+    speed(microtime, sensorValue2, sensorValue3);
+  }
+
+  if(millitime- driverpinOnTime <= fireduration) {
+    fire(sensorValue1);
+  } else if(millitime - driverpinOnTime < fireCooldown) {
     digitalWrite(driverpin, LOW);
-    Serial.println("on cooldown");
+    // Serial.println("on cooldown");
   }
   else {
     digitalWrite(driverpin, LOW);
-    Serial.println("awaiting input");
+    // Serial.println("awaiting input");
     driverpinOnTime = 0;
   }
+  
+  if(buttonValue == HIGH) {
+    Serial.print(millitime);
+    Serial.print(",");
+    Serial.print(sensorValue1);
+    Serial.print(",");
+    Serial.print(sensorValue2);
+    Serial.print(",");
+    Serial.println(sensorValue3);
+  }
+
 }
