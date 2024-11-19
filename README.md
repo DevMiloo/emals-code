@@ -1,7 +1,7 @@
 # EMALS code MAIN (most recent version)
 ### Code for an Electromagnetic catapult (aircraft launcher) for my Final Year school research project
-Emals-voltage is the failed voltage divider
-Emals-main is the main code that handles speed calculations and firing.
+- Emals-voltage is the failed voltage divider
+- Emals-main is the main code that handles speed calculations and firing.
 
 ### This github is split in multiple branches
 ![image](https://github.com/user-attachments/assets/e13caacc-4a14-4776-8d65-57bd426dce22)
