@@ -3,7 +3,7 @@
 - Emals-voltage is the failed voltage divider
 - Emals-main is the main code that handles speed calculations and firing.
   
-#- De bruine kat krult krullen in de krat
+###### De bruine kat krult krullen in de krat
 ### This github is split in multiple branches
 ![image](https://github.com/user-attachments/assets/e13caacc-4a14-4776-8d65-57bd426dce22)
 
