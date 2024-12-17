@@ -22,10 +22,10 @@ unsigned long timeDifference23 = 0;
 unsigned long timeDifference34 = 0;
 unsigned long timeDifference45 = 0;
 
-const float distance12 = 0.03; // Distance between hallpin1 and hallpin2 in meters
-const float distance23 = 0.03;
-const float distance34 = 0.03; // Distance between hallpin3 and hallpin4 in meters
-const float distance45 = 0.03;
+const float distance12 = 0.038;
+const float distance23 = 0.038;
+const float distance34 = 0.0395;
+const float distance45 = 0.039;
 
 const unsigned long fireduration = 1000;  // max on-time in milliseconds
 const unsigned long fireCooldown = 10000; // Cooldown period for fire in milliseconds
